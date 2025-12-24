@@ -34,7 +34,7 @@ void setup() {
 void loop() {
   // Pastikan WiFi aktif
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("⚠️ WiFi terputus! Mencoba konek ulang...");
+    Serial.println("WiFi terputus! Mencoba konek ulang...");
     connectWiFi();
   }
 
@@ -44,7 +44,7 @@ void loop() {
   delay(3000);
   bacaDanKirimSensor(dht2, SENSOR_2_ID);
 
-  Serial.println("⏳ Tunggu 60 detik...");
+  Serial.println("Tunggu 60 detik...");
   delay(60000);
 }
 
@@ -65,11 +65,11 @@ void connectWiFi() {
   }
 
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n✅ WiFi Tersambung!");
+    Serial.println("\n WiFi Tersambung!");
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
   } else {
-    Serial.println("\n❌ Gagal konek WiFi! Akan dicoba lagi nanti.");
+    Serial.println("\n Gagal konek WiFi! Akan dicoba lagi nanti.");
   }
 }
 
@@ -78,7 +78,7 @@ void bacaDanKirimSensor(DHT &dht, int sensorID) {
   float kelembapan = dht.readHumidity();
 
   if (isnan(suhu) || isnan(kelembapan)) {
-    Serial.println("❌ Sensor gagal baca data!");
+    Serial.println("Sensor gagal baca data!");
     return;
   }
 
@@ -86,24 +86,24 @@ void bacaDanKirimSensor(DHT &dht, int sensorID) {
 
   // Kirim suhu
   if (kirimData("suhu", "{\"nilai_suhu\":" + String(suhu) + ",\"id_sensor\":" + String(sensorID) + "}")) {
-    Serial.println("  ✓ Suhu OK");
+    Serial.println("Suhu OK");
   } else {
-    Serial.println("  ✗ Gagal kirim suhu!");
+    Serial.println("Gagal kirim suhu!");
   }
 
   delay(1500); // jeda antar request
 
   // Kirim kelembapan
   if (kirimData("kelembapan", "{\"nilai_kelembapan\":" + String(kelembapan) + ",\"id_sensor\":" + String(sensorID) + "}")) {
-    Serial.println("  ✓ Kelembapan OK");
+    Serial.println("Kelembapan OK");
   } else {
-    Serial.println("  ✗ Gagal kirim kelembapan!");
+    Serial.println("Gagal kirim kelembapan!");
   }
 }
 
 bool kirimData(const String& endpoint, const String& payload) {
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("⚠️ WiFi tidak terhubung, kirim dibatalkan!");
+    Serial.println("WiFi tidak terhubung, kirim dibatalkan!");
     return false;
   }
 
@@ -114,7 +114,7 @@ bool kirimData(const String& endpoint, const String& payload) {
   bool sukses = false;
   for (int percobaan = 1; percobaan <= 3; percobaan++) {
     int code = http.POST(payload);
-    Serial.printf("📡 [Laravel] Percobaan %d → Status: %d\n", percobaan, code);
+    Serial.printf("[Laravel] Percobaan %d → Status: %d\n", percobaan, code);
 
     if (code == 201) {
       sukses = true;
